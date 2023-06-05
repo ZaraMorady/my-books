@@ -7,18 +7,23 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using my_books.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using my_books.Data.Services;
 
 namespace my_books
 {
     public class Startup
     {
+        public string ConnectionString { get; set; }
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            ConnectionString = Configuration.GetConnectionString("DefaultConnectionString");
         }
 
         public IConfiguration Configuration { get; }
@@ -28,6 +33,10 @@ namespace my_books
         {
 
             services.AddControllers();
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(ConnectionString));
+            services.AddTransient<BooksService>();
+            services.AddTransient<AuthorsService>();
+            services.AddTransient<PublishersService>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "my_books", Version = "v1" });
@@ -54,6 +63,8 @@ namespace my_books
             {
                 endpoints.MapControllers();
             });
+
+            //AppInitializer.Seed(app);
         }
     }
 }
