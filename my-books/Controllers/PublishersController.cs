@@ -28,6 +28,23 @@ namespace my_books.Controllers
             return Ok();
         }
 
+        [HttpGet("get-publisher-with-books-and-authors-by-id/{id}")]
+
+        public IActionResult GetPublisherWithBooksAndAuthors(int id)
+        {
+            var response = _publisherService.GetPublisherData(id);
+            return Ok(response);
+        }
+
+        [HttpDelete("delete-publisher-by-id/{id}")]
+
+        public IActionResult DelPublisherById(int id)
+        {
+            _publisherService.DeletePublisherById(id);
+            return Ok();
+           
+        }
+
 
     }
 }
